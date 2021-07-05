@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 import lib.matlab_py.utils as utils
 
-audio_dir = './data/example/clean_speech.wav'
+audio_dir = '/home/piai/다운로드/vllo.MP4'
 
 mode = 0
 th = 0.4

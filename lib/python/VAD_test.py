@@ -138,6 +138,6 @@ if __name__ == '__main__':
         #
         # pred, label = Vl.main()
     
-    sio.savemat('./result/pred.mat', {'pred': pred})
-    sio.savemat('./result/label.mat', {'label': label})
+    sio.savemat(os.getcwd() + '/VAD/result/pred.mat', {'pred': pred})
+    sio.savemat(os.getcwd() + '/VAD/result/label.mat', {'label': label})
     print("done")

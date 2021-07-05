@@ -172,20 +172,21 @@ def vad_func(audio_dir, mode, th, output_type, is_default, off_on_length=20, on_
 
     os.mkdir('./result')
 
-    order = 'python3 ./lib/python/VAD_test.py -m %d -l %d -d %d --data_dir=./sample_data' \
+    order = 'python3 ' + os.getcwd() + '/lib/python/VAD_test.py -m %d -l %d -d %d --data_dir=./sample_data' \
         ' --model_dir=./saved_model --norm_dir=./norm_data' % (mode, data_len, is_default)
 
     os.system(order)
 
-    pred_result = sio.loadmat('./result/pred.mat')
+    pred_result = sio.loadmat(os.getcwd() + '/VAD/result/pred.mat')
     pp = pred_result['pred']
     result = np.zeros([len(pp), 1])
     result = th_classifier(pp, th)
-    result = vad_post(result, off_on_length, on_off_length, hang_before, hang_over)
+    result, speech_time = vad_post(result, off_on_length, on_off_length, hang_before, hang_over)
     if output_type == 1:
         result = frame2rawlabel(result, winlen, winstep)
 
-    return result
+    return result, speech_time
+    # return result
 
 
 def vad_post(post_label, off_on_length=20, on_off_length=20, hang_before=10, hang_over=10):
@@ -229,13 +230,14 @@ def vad_post(post_label, off_on_length=20, on_off_length=20, hang_before=10, han
     post_label = post_label[1:]
 
     '''hang before & over'''
-
+    speech_time = list()
+    time_set = list()
     for i in range(post_label.shape[0]):
 
         if i < post_label.shape[0] - 1:
             if post_label[i] == 0 and post_label[i + 1] == 1:  # onset detection
                 onset = True
-
+                time_set.append(round(i/100.0, 1))
                 if i - hang_before < 0:
                     post_label[0:i + 1] = 1
                 else:
@@ -244,11 +246,13 @@ def vad_post(post_label, off_on_length=20, on_off_length=20, hang_before=10, han
             if post_label[i] == 1 and post_label[i + 1] == 0 and onset:  # onset -> offset detection
 
                 onset = False
-                print(i)
+                time_set.append(round(i/100.0, 1))
+                speech_time.append(time_set)
+                time_set = list()
                 if i + hang_over > post_label.shape[0]:
                     post_label[i:, :] = 1
 
                 else:
                     post_label[i:i+hang_over, :] = 1
 
-    return post_label
+    return post_label, speech_time

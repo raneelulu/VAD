@@ -25,20 +25,20 @@ def mrcg_features( sig, sampFreq = 16000):
     t2=time.clock()
     cochlea2 = np.log10(cochleagram(g, int(sampFreq * 0.200), int(sampFreq * 0.010)))
     t3 = time.clock()
-    print('gamma total')
-    print(t1-t0)
-    print('coch1')
-    print(t2-t1)
-    print('coch2')
-    print(t3-t2)
+    # print('gamma total')
+    # print(t1-t0)
+    # print('coch1')
+    # print(t2-t1)
+    # print('coch2')
+    # print(t3-t2)
     cochlea1 = cochlea1[:,:]
     cochlea2 = cochlea2[:,:]
     t4 = time.clock()
     cochlea3 = get_avg(cochlea1, 5, 5)
     cochlea4 = get_avg(cochlea1, 11, 11)
     t5 = time.clock()
-    print('get avg')
-    print(t5-t4)
+    # print('get avg')
+    # print(t5-t4)
     all_cochleas = np.concatenate([cochlea1,cochlea2,cochlea3,cochlea4],0)
 
     del0 = deltas(all_cochleas)
@@ -85,8 +85,8 @@ def gammatone(insig, numChan=128, fs = 16000):
     t0 = time.clock()
     r = np.transpose(fftfilt(gt2,resig,numChan)) # gammatone filtering using FFTFILT
     t1 = time.clock()
-    print('fftfilter')
-    print(t1-t0)
+    # print('fftfilter')
+    # print(t1-t0)
     return r
 
 def hz2erb(hz):
@@ -117,7 +117,7 @@ def loudness(freq):
     # pressure level dB. The equation is taken from section 4 of BS3383.
     # Written by ZZ Jin, and adapted by DLW in Jan'07
     dB=60
-    fmat = sio.loadmat('./lib/matlab_py/f_af_bf_cf.mat')
+    fmat = sio.loadmat(os.getcwd() + '/VAD/lib/matlab_py/f_af_bf_cf.mat')
     # Stores parameters of equal-loudness functions from BS3383,"Normal equal-loudness level
     # contours for pure tones under free-field listening conditions", table 1.
     # f (or ff) is the tone frequency, af and bf are frequency-dependent coefficients, and
